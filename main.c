@@ -1,58 +1,72 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <unistd.h>
+#include <termios.h>
+#include <sys/select.h>
 
 int main() {
-    printf("Program started!\n");
+
+    struct termios orig;
+    tcgetattr(STDIN_FILENO, &orig);
+    struct termios raw = orig;
+    cfmakeraw(&raw);
+    tcsetattr(STDIN_FILENO, TCSANOW, &raw);
+
     long long cookies = 0;
-    long long cookiesPerSecond= 1;
-    long long cookieMult = 50;
-    
-    int choice;
+    long long cps = 1;
+    long long clickPower = 1;
     time_t last = time(NULL);
 
-    while (1){
-        time_t now =time(NULL);
-        if (now >last) {
-            cookies += cookiesPerSecond *(now - last);
-            last = now;
-        }
-    
+    while (1) {
+        // update cookies
+        time_t now = time(NULL);
+        cookies += cps * (now - last);
+        last = now;
 
+    // ui
+    system("clear");
+    printf("\rCookies: %lld\n", cookies);
+    printf("\rCookies Per Second:%lld\n", cps);
+    printf("\n"); 
 
-    printf(" Cookies: %lld\n", cookies);
-    printf(" Cookies Per Second:%lld\n", cookiesPerSecond);
-    printf("(choice) 1. Click (+%lld)\n", cookieMult);
-    printf("(choice) 2. Buy Cursor (+1 CPS) [cost: 50]\n");
-    printf("(choice) 3. Buy Grandma (+5 CPS) [cost: 200]\n");
-    printf("(choice) 100. Quit\n");
-    printf("Choose: ");
-    scanf("%d", &choice);
+    printf("\r⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣠⣴⣶⣿⣿⡿⠿⠷⣶⣤⣄⡀⠀⠀⠀⠀⠀⠀⠀⠀\n");
+    printf("\r⠀⠀⠀⠀⠀⠀⢀⣴⣾⣿⣿⣿⣿⣿⣿⣇⠀⠀⢸⣿⣿⣿⣦⡀⠀⠀⠀⠀⠀⠀\n");
+    printf("\r⠀⠀⠀⠀⢀⣴⣿⡿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣦⡀⠀⠀⠀⠀\n");
+    printf("\r⠀⠀⠀⢠⣿⡟⠁⠀⠀⢹⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⡀⠀⠀⠀\n");
+    printf("\r⠀⠀⢠⣿⣿⣿⣦⣄⣠⣼⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⢿⣿⣿⣿⣷⠀⠀⠀\n");
+    printf("\r⠀⠀⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡏⠀⠀⢹⣿⣿⣿⡇⠀⠀\n");
+    printf("\r⠀⠀⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣶⣶⣿⣿⣿⣿⣿⠀⠀\n");
+    printf("\r⠀⠀⢻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡟⠀⠀\n");
+    printf("\r⠀⠀⠈⢿⣿⣿⣿⣿⠟⠻⣿⣿⠋⠀⠉⣿⣿⣿⣿⣿⣿⣿⣿⡏⠀⢙⣿⠃⠀⠀\n");
+    printf("\r⠀⠀⠀⠈⢿⣿⣿⠁⠀⠀⠘⣿⣆⠀⢀⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠏⠀⠀⠀\n");
+    printf("\r⠀⠀⠀⠀⠀⠙⢿⣦⣤⣤⣶⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠋⠀⠀⠀⠀\n");
+    printf("\r⠀⠀⠀⠀⠀⠀⠀⠙⠿⣿⣿⣿⣿⣿⣿⣿⣿⡟⠉⢹⣿⣿⡿⠟⠁⠀⠀⠀⠀⠀\n");
+    printf("\r⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠛⠿⠿⣿⣿⣿⣷⡤⠾⠛⠉⠀⠀⠀⠀⠀⠀⠀⠀\n");
+    printf("\n");  
 
-    if (choice ==1){
-        cookies += cookieMult;
-    }
-    else if (choice ==2){
-        if (cookies >=50) {
-            cookies -=50;
-            cookiesPerSecond += 1;
-        } else{
-            printf("Not enough cookies\n");
+    printf("\r(1)  Click (+%lld)\n", clickPower);
+    printf("\r(2)  Buy Cursor (+1 CPS) [cost: 50]\n");
+    printf("\r(3)  3. Buy Grandma (+5 CPS) [cost: 200]\n");
+    printf("\r(q) Quit\n");
+    printf("\rChoose: ");
+
+        // input stuff
+        fd_set fds;
+        FD_ZERO(&fds);
+        FD_SET(STDIN_FILENO, &fds);
+        struct timeval tv = {0, 0};
+        if (select(1, &fds, NULL, NULL, &tv) > 0) {
+            char c = getchar();
+            if (c == '1') cookies += clickPower;
+            else if (c == '2' && cookies >= 50) { cookies -= 50; cps += 1; }
+            else if (c == '3' && cookies >= 200) { cookies -= 200; cps += 5; }
+            else if (c == 'q') break;
         }
-    }else if (choice ==3){
-        if (cookies >=200) {
-            cookies -=200;
-            cookiesPerSecond += 5;
-        } else{
-            printf("Not enough cookies\n");
-        }
+
+        usleep(100000); // rewrite output
     }
-    else if (choice ==100){
-        printf(":(\n");
-        break;
-        
-    }
-    else{
-        printf("invalid option\n");
-    }
-} }
+
+    tcsetattr(STDIN_FILENO, TCSANOW, &orig); // restore terminal
+    return 0;
+}
