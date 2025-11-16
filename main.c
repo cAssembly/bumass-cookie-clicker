@@ -51,10 +51,10 @@ int main() {
     printf("\r(4)  4. Buy Grandma (+25 CPS) [cost: 1000]\n");
     printf("\r(5)  5. Buy Cookie Farm (+100 CPS) [cost: 10000]\n");
     printf("\r(6)  6. Buy Cookieium Mine (+1000 CPS) [cost: 50,000]\n");
-    printf("\r(7)  7. Buy Cookie Factory (+5000 CPS) [cost: 250.000]\n");
-    printf("\r(8)  8. Buy Cookie Bank (+10.000 CPS) [cost: 500,000]\n");
-    printf("\r(9)  9. Buy Cookie Shrine (+50.000 CPS) [cost: 1,000,000]\n");
-    printf("\r(0)  0. Buy Wizard tower (+250.000 CPS) [cost: 1,000,000,0]\n"); 
+    printf("\r(7)  7. Buy Cookie Factory (+5000 CPS) [cost: 250,000]\n");
+    printf("\r(8)  8. Buy Cookie Bank (+10,000 CPS) [cost: 500,000]\n");
+    printf("\r(9)  9. Buy Cookie Shrine (+50,000 CPS) [cost: 1,000,000]\n");
+    printf("\r(0)  0. Buy Wizard tower (+250,000 CPS) [cost: 1,000,000,0]\n"); 
 
     printf("\r(q) Quit\n");
     printf("\rChoose: ");
